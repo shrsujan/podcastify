@@ -1,24 +1,18 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-
-export enum Role {
-  ADMIN = 'ADMIN',
-  ENGINEER = 'ENGINEER',
-  INTERN = 'INTERN',
-}
-
-export type User = { id: string; role: Role; name: string; email: string };
+import { Role, CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [
-    { id: '1', role: Role.ADMIN, name: 'Alice', email: 'alice@test.com' },
-    { id: '2', role: Role.ENGINEER, name: 'Bob', email: 'bob@test.com' },
-    { id: '3', role: Role.INTERN, name: 'Charlie', email: 'charlie@tes.com' },
-    { id: '4', role: Role.ADMIN, name: 'David', email: 'david@test.com' },
-    { id: '5', role: Role.ENGINEER, name: 'Eve', email: 'eve@test.com' },
+  private users = [
+    { id: 1, role: Role.ADMIN, name: 'Alice', email: 'alice@test.com' },
+    { id: 2, role: Role.ENGINEER, name: 'Bob', email: 'bob@test.com' },
+    { id: 3, role: Role.INTERN, name: 'Charlie', email: 'charlie@tes.com' },
+    { id: 4, role: Role.ADMIN, name: 'David', email: 'david@test.com' },
+    { id: 5, role: Role.ENGINEER, name: 'Eve', email: 'eve@test.com' },
   ];
 
-  getUsers(role?: Role): User[] {
+  getUsers(role?: Role) {
     try {
       if (!role) {
         return this.users;
@@ -33,9 +27,9 @@ export class UsersService {
     }
   }
 
-  getUser(id: string): User {
+  getUser(id: number) {
     try {
-      const index = this.users.findIndex((user) => user.id === id);
+      const index = this.users.findIndex((user) => user.id === +id);
 
       if (index <= -1) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -50,12 +44,12 @@ export class UsersService {
     }
   }
 
-  create(user: Omit<User, 'id'>): User {
+  create(createUserDto: CreateUserDto) {
     try {
       const usersByHighestId = this.users.sort((a, b) => +b.id - +a.id);
       const newUser = {
-        id: (+usersByHighestId[0].id + 1).toString(),
-        ...user,
+        id: usersByHighestId[0].id + 1,
+        ...createUserDto,
       };
       this.users.push(newUser);
 
@@ -68,15 +62,15 @@ export class UsersService {
     }
   }
 
-  update(id: string, user: Partial<Omit<User, 'id'>>): User {
+  update(id: number, updateUserDto: UpdateUserDto) {
     try {
-      const index = this.users.findIndex((user) => user.id === id);
+      const index = this.users.findIndex((user) => user.id === +id);
 
       if (index <= -1) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
 
-      this.users[index] = { ...this.users[index], ...user };
+      this.users[index] = { ...this.users[index], ...updateUserDto };
 
       return this.getUser(id);
     } catch (error) {
@@ -87,9 +81,9 @@ export class UsersService {
     }
   }
 
-  delete(id: string): User {
+  delete(id: number) {
     try {
-      const index = this.users.findIndex((user) => user.id === id);
+      const index = this.users.findIndex((user) => user.id === +id);
 
       if (index <= -1) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
