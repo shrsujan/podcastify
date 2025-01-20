@@ -28,14 +28,14 @@ export class MyLoggerService extends ConsoleLogger {
   }
 
   log(message: unknown, context?: unknown, ...rest: unknown[]): void {
-    const entry = `${context}\t${message}`;
+    const entry = `${context}\t${typeof message === 'object' ? JSON.stringify(message) : message}`;
     this.logToFile(entry);
 
     super.log(message, context, ...rest);
   }
 
   error(message: unknown, context?: unknown, ...rest: unknown[]): void {
-    const entry = `${context}\t${message}`;
+    const entry = `${context}\t${typeof message === 'object' ? JSON.stringify(message) : message}`;
     this.logToFile(entry);
 
     super.error(message, context, ...rest);

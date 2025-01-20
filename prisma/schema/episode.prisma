@@ -1,0 +1,7 @@
+model Episode {
+  id          String   @id @default(cuid())
+  name        String
+  isFeatured  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

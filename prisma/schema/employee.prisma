@@ -1,0 +1,15 @@
+enum Role {
+  ADMIN
+  ENGINEER
+  INTERN
+}
+
+model Employee {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String   @unique
+  role      Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
