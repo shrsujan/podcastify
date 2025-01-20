@@ -1,11 +1,11 @@
-import { IsBoolean, IsNotEmpty, IsString, ValidateIf } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateEpisodeDto {
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  @ValidateIf((o) => o.description !== undefined)
+  @IsOptional()
   @IsBoolean()
-  isFeatured: boolean;
+  isFeatured?: boolean;
 }
