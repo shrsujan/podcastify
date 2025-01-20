@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -22,35 +23,41 @@ export class EpisodesController {
   ) {}
 
   @Get()
-  findAll(@Query('sort') sort: 'asc' | 'desc' = 'asc') {
-    return this.episodesService.findAll(sort);
+  async findAll(@Query('sort') sort: 'asc' | 'desc' = 'asc') {
+    return await this.episodesService.findAll(sort);
   }
 
   @Get('featured')
-  findFeatured() {
-    return this.episodesService.findFeatured();
+  async findFeatured() {
+    return await this.episodesService.findFeatured();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.episodesService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const episode = await this.episodesService.findOne(id);
+
+    if (!episode) {
+      throw new NotFoundException('Episode not found');
+    }
+
+    return episode;
   }
 
   @Post()
-  create(@Body(ValidationPipe) episodeDto: CreateEpisodeDto) {
-    return this.episodesService.create(episodeDto);
+  async create(@Body(ValidationPipe) episodeDto: CreateEpisodeDto) {
+    return await this.episodesService.create(episodeDto);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body(ValidationPipe) episodeDto: UpdateEpisodeDto,
   ) {
-    return this.episodesService.update(id, episodeDto);
+    return await this.episodesService.update(id, episodeDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.episodesService.remove(id);
+  async remove(@Param('id') id: string) {
+    return await this.episodesService.remove(id);
   }
 }

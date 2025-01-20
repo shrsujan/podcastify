@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 
@@ -20,15 +20,9 @@ export class EpisodesService {
   }
 
   async findOne(id: string) {
-    const episode = await this.databaseService.episode.findUnique({
+    return await this.databaseService.episode.findUnique({
       where: { id },
     });
-
-    if (!episode) {
-      throw new NotFoundException('Episode not found');
-    }
-
-    return episode;
   }
 
   async create(episdoeDto: Prisma.EpisodeCreateInput) {
